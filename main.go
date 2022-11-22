@@ -8,8 +8,12 @@ import (
 
 func main(){
 	router := gin.Default()
+
+	//register the apis to the router
 	router.GET("/healthcheck",handlers.HealthCheck)
-	router.POST("/short",handlers.Short)
-	router.GET("/admin",handlers.GetURLHash)
+	router.POST("/short",handlers.ShortenURL)
+	router.GET("/admin",handlers.GetURLHashMap)
+
+	//start the server and listen on port 8080
 	router.Run(":8080")
 }

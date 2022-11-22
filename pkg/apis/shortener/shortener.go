@@ -28,6 +28,7 @@ func GetMD5Hash(link string)[16]byte{
 
 func Getbase62(hash [16]byte) string{
 	result := ""
+	//itertae each byte and encode to base62
 	for _,value := range hash{
 		char := base62.Encode(int(value))
 		result = result + char
