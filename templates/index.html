@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Welcome to URL Shortener</h2>
+
+<form>
+  <label for="url">Enter the URL to be shortened:</label><br>
+  <input type="text" id="urlinput" name="url" value="" size="75"><br>
+  <br>
+  <input type="submit" value="Submit" onclick="ShortenUrl(event)">
+  <br>
+  <br>
+</form> 
+
+<!-- The text field -->
+<input type="text" value="" id="myInput" size="75">
+
+<!-- The button used to copy the text -->
+<button onclick="myFunction()">Copy text</button>
+
+</body>
+</html>
+
+<script>
+
+
+    function myFunction() {
+      // Get the text field
+      var copyText = document.getElementById("myInput");
+    
+      // Select the text field
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); // For mobile devices
+    
+       // Copy the text inside the text field
+      navigator.clipboard.writeText(copyText.value);
+    
+      // Alert the copied text
+      alert("Copied the text: " + copyText.value);
+    }
+
+   function ShortenUrl(e){
+    var myinput = document.getElementById("myInput")
+    event.preventDefault()
+    // Sending and receiving data in JSON format using POST method
+    var xhr = new XMLHttpRequest();
+    var url = "/short";
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var json = JSON.parse(xhr.responseText);
+            console.log(xhr.responseText);
+            myinput.value = xhr.responseText.replaceAll('"','')
+        }
+    };
+    var urldata = document.getElementById("urlinput")
+    var data = JSON.stringify({"url": urldata.value});
+    xhr.send(data);
+   }
+    
+</script>
