@@ -3,21 +3,43 @@ package shortener
 import (
 	"crypto/md5"
 	"github.com/catinello/base62"
+	"encoding/json"
+	"io/ioutil"
 )
 
 var UrlHashMap map[string]string
 
-func Short(link string) string{
+func Short(link string) (*string,error){
+
+
 	//check if the url already exist 
-	if _, ok := UrlHashMap[link]; ok {
-		return UrlHashMap[link]
+	readData, err := ioutil.ReadFile("db/values.json")
+	if(err != nil){
+		return nil,err
+	}
+	var readResp map[string]string
+	json.Unmarshal(readData,&readResp)
+	if _, ok := readResp[link]; ok {
+		base62 :=  readResp[link]
+		return &base62,nil
 	}
 	//generate hash
 	hash := GetMD5Hash(link)
 	base62 := Getbase62(hash)
-	//store url -> hash in map
-	UrlHashMap[link] = base62[:6]
-	return base62
+	//store url -> hash in map in db
+	if(readResp == nil){
+		readResp = make(map[string]string)
+	}
+	readResp[link] = base62[:6]
+	data,err := json.Marshal(readResp)
+	if(err!= nil){
+		return nil,err
+	}
+	err = ioutil.WriteFile("db/values.json",data,0644)
+	if(err!= nil){
+		return nil,err
+	}
+	return &base62,nil
 }
 
 

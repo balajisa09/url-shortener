@@ -42,12 +42,3 @@ func TestGetbase62(t *testing.T){
 	}
 }
 
-func TestShort(t *testing.T){
-	for url,hash := range ShortInputs{
-		got := Short(url)
-		expected := hash
-		if got != expected{
-			t.Errorf("got %q, expected %q", got, expected)
-		}
-	}
-}

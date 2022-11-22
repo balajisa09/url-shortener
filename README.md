@@ -2,11 +2,13 @@
 
 ## Overview
 
-An URL shortener app return in golang gin web framework. 
+An URL shortener app written in golang gin web framework. 
 
 ## How to run
 
 ```
+$ git clone git@github.com:balajisa09/url-shortener.git
+
 $ cd url-shortener
 
 $ go run main.go 
