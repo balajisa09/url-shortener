@@ -28,10 +28,20 @@ func short(ctx *gin.Context){
 	ctx.IndentedJSON(200,result)
 }
 
+func getURLHash(ctx *gin.Context){
+    _ = shortener.UrlHashMap
+    res , err := json.Marshal(shortener.UrlHashMap)
+    if err != nil{
+        return
+    }
+    ctx.IndentedJSON(200,string(res))
+}
+
 func main(){
 
 	router := gin.Default()
 	router.GET("/healthcheck",healthCheck)
 	router.POST("/short",short)
+	router.GET("/admin",getURLHash)
 	router.Run(":8080")
 }
