@@ -7,8 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var ServerURL string
 type Request struct{
 	URL string `json:"url"`
+}
+
+type Response struct{
+	URL string `json:"url"`
+	Hash string `json:"hash"`
 }
 
 func healthCheck(ctx *gin.Context){
@@ -25,20 +31,26 @@ func short(ctx *gin.Context){
 	link := req.URL
 	result := shortener.Short(link)
 	result = result[:6]
-	ctx.IndentedJSON(200,result)
+	ctx.IndentedJSON(200,ServerURL+result)
 }
 
 func getURLHash(ctx *gin.Context){
-    _ = shortener.UrlHashMap
-    res , err := json.Marshal(shortener.UrlHashMap)
-    if err != nil{
-        return
-    }
-    ctx.IndentedJSON(200,string(res))
+	
+	var respList []Response	
+	urlhashmap := shortener.UrlHashMap
+	for key, value := range urlhashmap{
+		resp := Response{
+			 URL: key,
+			 Hash: value,
+		}
+		respList = append(respList, resp)
+	}
+	ctx.IndentedJSON(200,respList)
 }
 
 func main(){
 
+	ServerURL = "https://short.in/"
 	router := gin.Default()
 	router.GET("/healthcheck",healthCheck)
 	router.POST("/short",short)

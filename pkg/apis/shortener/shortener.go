@@ -16,7 +16,7 @@ func Short(link string) string{
 	hash := GetMD5Hash(link)
 	base62 := Getbase62(hash)
 	//store url -> hash in map
-	UrlHashMap[link] = base62
+	UrlHashMap[link] = base62[:6]
 	return base62
 }
 
