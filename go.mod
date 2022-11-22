@@ -2,7 +2,10 @@ module github.com/balajisa09/url-shortener
 
 go 1.18
 
-require github.com/gin-gonic/gin v1.8.1
+require (
+	github.com/catinello/base62 v0.0.0-20210103152244-29b605f01e9b
+	github.com/gin-gonic/gin v1.8.1
+)
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
