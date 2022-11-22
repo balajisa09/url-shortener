@@ -22,6 +22,10 @@ func ShortenURL(ctx *gin.Context){
 	var req models.Request
 	json.Unmarshal(data,&req)
 	link := req.URL
+	if link == ""{
+		ctx.IndentedJSON(400,"Invalid Request")
+		return
+	}
 	//shorten the url from client
 	result := shortener.Short(link)
 	//take first six characters from the generated hash
