@@ -1,12 +1,14 @@
 package handlers
 
-import(
+import (
 	"encoding/json"
 	"io/ioutil"
+	"regexp"
+	"time"
+
+	"github.com/balajisa09/url-shortener/models"
 	"github.com/balajisa09/url-shortener/pkg/apis/shortener"
 	"github.com/gin-gonic/gin"
-	"github.com/balajisa09/url-shortener/models"
-	"regexp"
 )
 
 var ServerURL string
@@ -24,6 +26,7 @@ func ShortenURL(ctx *gin.Context){
 	var req models.Request
 	json.Unmarshal(data,&req)
 	link := req.URL
+	//expiry := req.Expiry
 	//validate link
 	re := regexp.MustCompile(`http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+`)
 	matched := re.MatchString(link)
@@ -68,6 +71,31 @@ func GetURLHashMap(ctx *gin.Context){
 	ctx.IndentedJSON(200,respList)
 }
 
+func RedirectURL(ctx *gin.Context){
+	//get hash from the url query
+	hash, _ := ctx.GetQuery("hash")
+
+	//iterate the db to get the original url
+	readData, err := ioutil.ReadFile("db/values.json")
+	if(err != nil){
+		ctx.IndentedJSON(500,"Internal server error")
+	}
+	var readResp map[string]shortener.ShortenValue
+	json.Unmarshal(readData,&readResp)
+	
+	shortValue := readResp[hash]
+
+	//check timestamp
+	timeDiff := shortValue.Timestamp.Sub(time.Now())
+	
+	if (timeDiff > time.Second*10){
+		ctx.IndentedJSON(400,"URL expired")
+	}
+	//redirecting to original URL
+	ctx.Redirect(302,shortValue.URL)
+}
+
+
 func init(){
-	ServerURL = "http://localhost:8080/"
+	ServerURL = "http://localhost:8080/shortner?hash="
 }

@@ -14,7 +14,7 @@ func main(){
 	router.GET("/healthcheck",handlers.HealthCheck)
 	router.POST("/short",handlers.ShortenURL)
 	router.GET("/admin",handlers.GetURLHashMap)
-
+	router.GET("/shortner",handlers.RedirectURL)
 	//start the server and listen on port 8080
 	router.Run(":8080")
 }
